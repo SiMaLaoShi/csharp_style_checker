@@ -8,7 +8,7 @@ setup(
     version="0.1.0",
     description="C# 代码风格检查工具",
     author="恶霸威",
-    author_email="your.email@example.com",
+    author_email="wuhudashima@gmail.com",
     url="https://github.com/SiMaLaoShi/csharp_style_checker",
     packages=find_packages(),
     entry_points={

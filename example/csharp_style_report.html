@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C#代码风格检查报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 15px;
+        }
+
+        .report-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .summary {
+            margin-bottom: 30px;
+        }
+
+        .summary-cards {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            width: 23%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .card-total { border-top: 4px solid #3498db; }
+        .card-error { border-top: 4px solid #e74c3c; }
+        .card-warning { border-top: 4px solid #f39c12; }
+        .card-info { border-top: 4px solid #2ecc71; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .error-row { background-color: rgba(231, 76, 60, 0.1); }
+        .warning-row { background-color: rgba(243, 156, 18, 0.1); }
+        .info-row { background-color: rgba(46, 204, 113, 0.1); }
+
+        .file-section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .file-path {
+            color: #777;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .issues-table {
+            margin-bottom: 20px;
+        }
+
+        .code-preview {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        pre {
+            margin: 0;
+            padding: 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .line-number {
+            display: inline-block;
+            width: 40px;
+            color: #999;
+            text-align: right;
+            padding-right: 10px;
+            margin-right: 10px;
+            border-right: 1px solid #ddd;
+            user-select: none;
+        }
+
+        .line-error { background-color: rgba(231, 76, 60, 0.2); }
+        .line-warning { background-color: rgba(243, 156, 18, 0.2); }
+        .line-info { background-color: rgba(46, 204, 113, 0.2); }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid #ddd;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>C# 代码风格检查报告</h1>
+            <div class="report-info">
+                <p>生成时间: 2025-04-29 15:33:50</p>
+                <p>检查文件: 1 个</p>
+            </div>
+        </header>
+
+        <section class="summary">
+            <h2>问题摘要</h2>
+            <div class="summary-cards">
+                <div class="card card-total">
+                    <div class="card-title">总问题数</div>
+                    <div class="card-value">18</div>
+                </div>
+                <div class="card card-error">
+                    <div class="card-title">错误</div>
+                    <div class="card-value">0</div>
+                </div>
+                <div class="card card-warning">
+                    <div class="card-title">警告</div>
+                    <div class="card-value">17</div>
+                </div>
+                <div class="card card-info">
+                    <div class="card-title">提示</div>
+                    <div class="card-value">1</div>
+                </div>
+            </div>
+
+            <h2>文件摘要</h2>
+            <table class="summary-table">
+                <tr>
+                    <th>文件</th>
+                    <th>问题数</th>
+                    <th>错误</th>
+                    <th>警告</th>
+                    <th>提示</th>
+                </tr>
+                <tr class="warning-row">
+  <td><a href="#file--7583870616730091503">StyleRulesTest.cs</a></td>
+  <td>18</td>
+  <td>0</td>
+  <td>17</td>
+  <td>1</td>
+</tr>
+            </table>
+        </section>
+
+        <section class="details">
+            <h2>问题详情</h2>
+            <div class="file-section" id="file--7583870616730091503">
+  <h3>StyleRulesTest.cs</h3>
+  <div class="file-path">example\StyleRulesTest.cs</div>
+  <table class="issues-table">
+    <tr><th>行</th><th>列</th><th>规则</th><th>严重性</th><th>消息</th></tr>
+    <tr class="warning-row">
+      <td>7</td>
+      <td>18</td>
+      <td>CS0007</td>
+      <td>warning</td>
+      <td>接口名 'resource' 必须以'I'开头</td>
+    </tr>
+    <tr class="warning-row">
+      <td>21</td>
+      <td>15</td>
+      <td>CS0009</td>
+      <td>warning</td>
+      <td>结构体名 'Point' 必须以'st'开头</td>
+    </tr>
+    <tr class="warning-row">
+      <td>35</td>
+      <td>14</td>
+      <td>CS0001</td>
+      <td>warning</td>
+      <td>类名 'badPlayer' 应该使用PascalCase命名法（首字母大写）</td>
+    </tr>
+    <tr class="warning-row">
+      <td>35</td>
+      <td>24</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'class' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>37</td>
+      <td>22</td>
+      <td>CS0006</td>
+      <td>warning</td>
+      <td>常量名 'maxPlayers' 应该全部大写并使用下划线分隔单词</td>
+    </tr>
+    <tr class="warning-row">
+      <td>38</td>
+      <td>24</td>
+      <td>CS0006</td>
+      <td>warning</td>
+      <td>常量名 'DefaultSpeed' 应该全部大写并使用下划线分隔单词</td>
+    </tr>
+    <tr class="warning-row">
+      <td>45</td>
+      <td>17</td>
+      <td>CS0002</td>
+      <td>warning</td>
+      <td>私有字段 'health' 应该使用下划线前缀</td>
+    </tr>
+    <tr class="warning-row">
+      <td>46</td>
+      <td>19</td>
+      <td>CS0002</td>
+      <td>warning</td>
+      <td>私有字段 'speed' 应该使用下划线前缀</td>
+    </tr>
+    <tr class="warning-row">
+      <td>53</td>
+      <td>24</td>
+      <td>CS0010</td>
+      <td>warning</td>
+      <td>静态字段 'playerCount' 应该以's_'开头</td>
+    </tr>
+    <tr class="warning-row">
+      <td>61</td>
+      <td>17</td>
+      <td>CS0003</td>
+      <td>warning</td>
+      <td>方法名 'updateHealth' 应该使用PascalCase命名法（首字母大写）</td>
+    </tr>
+    <tr class="warning-row">
+      <td>66</td>
+      <td>26</td>
+      <td>CS0002</td>
+      <td>warning</td>
+      <td>私有字段 'item' 应该使用下划线前缀</td>
+    </tr>
+    <tr class="info-row">
+      <td>66</td>
+      <td>26</td>
+      <td>CS0006</td>
+      <td>info</td>
+      <td>集合类型字段 'item' 的命名建议使用复数形式</td>
+    </tr>
+    <tr class="warning-row">
+      <td>87</td>
+      <td>19</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'if' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>132</td>
+      <td>30</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'for' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>137</td>
+      <td>28</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'foreach' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>142</td>
+      <td>5</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'try' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>144</td>
+      <td>24</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'catch' 的开括号应该放在新行</td>
+    </tr>
+    <tr class="warning-row">
+      <td>146</td>
+      <td>11</td>
+      <td>CS0004</td>
+      <td>warning</td>
+      <td>'finally' 的开括号应该放在新行</td>
+    </tr>
+  </table>
+  <div class="code-preview">
+    <h4>代码预览</h4>
+    <pre><code class="csharp">
+<span class="line-number">1</span><span class="">using System;</span>
+<span class="line-number">2</span><span class="">using System.Collections.Generic;</span>
+<span class="line-number">3</span><span class="">using System.Text;</span>
+<span class="line-number">4</span><span class="">using System.Linq;</span>
+<span class="line-number">5</span><span class=""></span>
+<span class="line-number">6</span><span class="">// 错误的接口命名（不以I开头）</span>
+<span class="line-number">7</span><span class="line-warning">public interface resource</span>
+<span class="line-number">8</span><span class="">{</span>
+<span class="line-number">9</span><span class="">    void LoadResource();</span>
+<span class="line-number">10</span><span class="">    void UnloadResource();</span>
+<span class="line-number">11</span><span class="">}</span>
+<span class="line-number">12</span><span class=""></span>
+<span class="line-number">13</span><span class="">// 正确的接口命名</span>
+<span class="line-number">14</span><span class="">public interface IResource</span>
+<span class="line-number">15</span><span class="">{</span>
+<span class="line-number">16</span><span class="">    void LoadResource();</span>
+<span class="line-number">17</span><span class="">    void UnloadResource();</span>
+<span class="line-number">18</span><span class="">}</span>
+<span class="line-number">19</span><span class=""></span>
+<span class="line-number">20</span><span class="">// 错误的结构体命名（不以st开头）</span>
+<span class="line-number">21</span><span class="line-warning">public struct Point</span>
+<span class="line-number">22</span><span class="">{</span>
+<span class="line-number">23</span><span class="">    public int X;</span>
+<span class="line-number">24</span><span class="">    public int Y;</span>
+<span class="line-number">25</span><span class="">}</span>
+<span class="line-number">26</span><span class=""></span>
+<span class="line-number">27</span><span class="">// 正确的结构体命名</span>
+<span class="line-number">28</span><span class="">public struct stPoint</span>
+<span class="line-number">29</span><span class="">{</span>
+<span class="line-number">30</span><span class="">    public int X;</span>
+<span class="line-number">31</span><span class="">    public int Y;</span>
+<span class="line-number">32</span><span class="">}</span>
+<span class="line-number">33</span><span class=""></span>
+<span class="line-number">34</span><span class="">// 错误的类名（不符合PascalCase）</span>
+<span class="line-number">35</span><span class="line-warning">public class badPlayer {  // 同时违反了大括号规则</span>
+<span class="line-number">36</span><span class="">    // 常量命名错误（不是全大写）</span>
+<span class="line-number">37</span><span class="line-warning">    public const int maxPlayers = 4;</span>
+<span class="line-number">38</span><span class="line-warning">    public const float DefaultSpeed = 5.0f;</span>
+<span class="line-number">39</span><span class="">    </span>
+<span class="line-number">40</span><span class="">    // 正确的常量命名</span>
+<span class="line-number">41</span><span class="">    public const int MAX_PLAYERS = 4;</span>
+<span class="line-number">42</span><span class="">    public const float MAX_SPEED = 10.0f;</span>
+<span class="line-number">43</span><span class="">    </span>
+<span class="line-number">44</span><span class="">    // 私有字段命名错误（没有下划线前缀）</span>
+<span class="line-number">45</span><span class="line-warning">    private int health;</span>
+<span class="line-number">46</span><span class="line-warning">    private float speed;</span>
+<span class="line-number">47</span><span class="">    </span>
+<span class="line-number">48</span><span class="">    // 正确的私有字段命名</span>
+<span class="line-number">49</span><span class="">    private int _health;</span>
+<span class="line-number">50</span><span class="">    private float _speed;</span>
+<span class="line-number">51</span><span class="">    </span>
+<span class="line-number">52</span><span class="">    // 静态字段命名错误（没有使用s_+类型缩写格式）</span>
+<span class="line-number">53</span><span class="line-warning">    private static int playerCount;</span>
+<span class="line-number">54</span><span class="">    private static Dictionary&lt;int, string&gt; playerNames;</span>
+<span class="line-number">55</span><span class="">    </span>
+<span class="line-number">56</span><span class="">    // 正确的静态字段命名</span>
+<span class="line-number">57</span><span class="">    private static int s_iPlayerCount;</span>
+<span class="line-number">58</span><span class="">    private static Dictionary&lt;int, string&gt; s_dictPlayerNames;</span>
+<span class="line-number">59</span><span class="">    </span>
+<span class="line-number">60</span><span class="">    // 方法命名错误（不符合PascalCase）</span>
+<span class="line-number">61</span><span class="line-warning">    public void updateHealth(int amount) {  // 同时违反了大括号规则</span>
+<span class="line-number">62</span><span class="">        _health += amount;</span>
+<span class="line-number">63</span><span class="">    }</span>
+<span class="line-number">64</span><span class="">    </span>
+<span class="line-number">65</span><span class="">    // 集合命名错误（不是复数形式）</span>
+<span class="line-number">66</span><span class="line-warning">    private List&lt;string&gt; item;</span>
+<span class="line-number">67</span><span class="">    private Dictionary&lt;int, float&gt; scoreMap;</span>
+<span class="line-number">68</span><span class="">    </span>
+<span class="line-number">69</span><span class="">    // 正确的集合命名</span>
+<span class="line-number">70</span><span class="">    private List&lt;string&gt; _items;</span>
+<span class="line-number">71</span><span class="">    private Dictionary&lt;int, float&gt; _scoreMaps;</span>
+<span class="line-number">72</span><span class="">    </span>
+<span class="line-number">73</span><span class="">    // 行过长示例（视具体设置的最大行长而定）</span>
+<span class="line-number">74</span><span class="">    public void SomeLongMethod() {</span>
+<span class="line-number">75</span><span class="">        Console.WriteLine(&quot;这是一行非常长的代码，它故意超出了规则中设置的最大行长度限制，目的是测试行长度检查规则是否能正确工作。我们期望在代码检查时这一行会被标记为违反了LineIsTooLongRule规则。&quot;);</span>
+<span class="line-number">76</span><span class="">    }</span>
+<span class="line-number">77</span><span class="">    </span>
+<span class="line-number">78</span><span class="">    // 正确的方法命名和大括号放置</span>
+<span class="line-number">79</span><span class="">    public void UpdateHealth(int amount)</span>
+<span class="line-number">80</span><span class="">    {</span>
+<span class="line-number">81</span><span class="">        _health += amount;</span>
+<span class="line-number">82</span><span class="">    }</span>
+<span class="line-number">83</span><span class="">    </span>
+<span class="line-number">84</span><span class="">    public void Update()</span>
+<span class="line-number">85</span><span class="">    {</span>
+<span class="line-number">86</span><span class="">        // if语句的大括号错误放置</span>
+<span class="line-number">87</span><span class="line-warning">        if (_health &lt;= 0) {</span>
+<span class="line-number">88</span><span class="">            Console.WriteLine(&quot;Game Over&quot;);</span>
+<span class="line-number">89</span><span class="">        }</span>
+<span class="line-number">90</span><span class="">        </span>
+<span class="line-number">91</span><span class="">        // 正确的if语句大括号放置</span>
+<span class="line-number">92</span><span class="">        if (_speed &gt; MAX_SPEED)</span>
+<span class="line-number">93</span><span class="">        {</span>
+<span class="line-number">94</span><span class="">            _speed = MAX_SPEED;</span>
+<span class="line-number">95</span><span class="">        }</span>
+<span class="line-number">96</span><span class="">    }</span>
+<span class="line-number">97</span><span class="">}</span>
+<span class="line-number">98</span><span class=""></span>
+<span class="line-number">99</span><span class="">// 正确的类名</span>
+<span class="line-number">100</span><span class="">public class Player</span>
+<span class="line-number">101</span><span class="">{</span>
+<span class="line-number">102</span><span class="">    public void Move(float x, float y)</span>
+<span class="line-number">103</span><span class="">    {</span>
+<span class="line-number">104</span><span class="">        // 实现移动逻辑</span>
+<span class="line-number">105</span><span class="">    }</span>
+<span class="line-number">106</span><span class="">}</span>
+<span class="line-number">107</span><span class=""></span>
+<span class="line-number">108</span><span class="">// 测试枚举命名</span>
+<span class="line-number">109</span><span class="">public enum direction  // 错误的枚举命名（不符合PascalCase）</span>
+<span class="line-number">110</span><span class="">{</span>
+<span class="line-number">111</span><span class="">    North,</span>
+<span class="line-number">112</span><span class="">    South,</span>
+<span class="line-number">113</span><span class="">    East,</span>
+<span class="line-number">114</span><span class="">    West</span>
+<span class="line-number">115</span><span class="">}</span>
+<span class="line-number">116</span><span class=""></span>
+<span class="line-number">117</span><span class="">// 正确的枚举命名</span>
+<span class="line-number">118</span><span class="">public enum Direction</span>
+<span class="line-number">119</span><span class="">{</span>
+<span class="line-number">120</span><span class="">    North,</span>
+<span class="line-number">121</span><span class="">    South,</span>
+<span class="line-number">122</span><span class="">    East,</span>
+<span class="line-number">123</span><span class="">    West</span>
+<span class="line-number">124</span><span class="">}</span>
+<span class="line-number">125</span><span class=""></span>
+<span class="line-number">126</span><span class="">// 包含各种嵌套块的示例类</span>
+<span class="line-number">127</span><span class="">public class StyleTestClass</span>
+<span class="line-number">128</span><span class="">{</span>
+<span class="line-number">129</span><span class="">    public void TestMethod()</span>
+<span class="line-number">130</span><span class="">    {</span>
+<span class="line-number">131</span><span class="">        // 错误的for循环大括号</span>
+<span class="line-number">132</span><span class="line-warning">        for (int i = 0; i &lt; 10; i++) {</span>
+<span class="line-number">133</span><span class="">            Console.WriteLine(i);</span>
+<span class="line-number">134</span><span class="">        }</span>
+<span class="line-number">135</span><span class="">        </span>
+<span class="line-number">136</span><span class="">        // 错误的foreach循环大括号</span>
+<span class="line-number">137</span><span class="line-warning">        foreach (var item in new[] { 1, 2, 3 }) {</span>
+<span class="line-number">138</span><span class="">            Console.WriteLine(item);</span>
+<span class="line-number">139</span><span class="">        }</span>
+<span class="line-number">140</span><span class="">        </span>
+<span class="line-number">141</span><span class="">        // 错误的try-catch大括号</span>
+<span class="line-number">142</span><span class="line-warning">        try {</span>
+<span class="line-number">143</span><span class="">            throw new Exception();</span>
+<span class="line-number">144</span><span class="line-warning">        } catch (Exception ex) {</span>
+<span class="line-number">145</span><span class="">            Console.WriteLine(ex.Message);</span>
+<span class="line-number">146</span><span class="line-warning">        } finally {</span>
+<span class="line-number">147</span><span class="">            Console.WriteLine(&quot;Finally&quot;);</span>
+<span class="line-number">148</span><span class="">        }</span>
+<span class="line-number">149</span><span class="">    }</span>
+<span class="line-number">150</span><span class="">}</span>
+    </code></pre>
+  </div>
+</div>
+        </section>
+
+        <footer>
+            <p>C# 代码风格检查工具 &copy; 2025</p>
+        </footer>
+    </div>
+</body>
+</html>
