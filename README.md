@@ -35,5 +35,5 @@
 
 [示例代码](example/StyleRulesTest.cs)
 
-[示例结果](example/csharp_style_report)
+[示例结果](example/csharp_style_report.html)
 
