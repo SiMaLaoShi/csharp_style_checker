@@ -16,20 +16,24 @@
 
 ## 支持的规则
 
-本工具目前支持以下代码风格规则检查：
+## 本工具目前支持以下代码风格规则检查：
 
-| 规则ID |           规则名称           |                      描述                      | 严重级别 |
-| :----: | :--------------------------: | :--------------------------------------------: | :------: |
-| CS0001 |     ClassNamePascalCase      |          类名应该使用PascalCase命名法          |   警告   |
-| CS0002 | PrivateFieldUnderscorePrefix |           私有字段应该使用下划线前缀           |   警告   |
-| CS0003 |     MethodNamePascalCase     |         方法名应该使用PascalCase命名法         |   警告   |
-| CS0004 |        BraceOnNewLine        |       开括号应该放在新行上（Allman风格）       |   警告   |
-| CS0005 |         LineTooLong          |            行长度不应超过指定字符数            |   提示   |
-| CS0006 |     ConstantNameAllCaps      |     常量名应该全部大写并使用下划线分隔单词     |   警告   |
-| CS0007 |   InterfaceNameStartsWithI   |  接口名称必须以'I'开头并遵循PascalCase命名法   |   警告   |
-| CS0008 |    StructNameStartsWithSt    | 结构体名称必须以'st'开头并遵循PascalCase命名法 |   警告   |
-| CS0009 |      StaticFieldNaming       |   静态字段应该使用s_+[类型缩写]+变量名称格式   |   警告   |
-| CS0010 |    CollectionPluralNaming    |        集合类型变量的命名应使用复数形式        |   提示   |
+|            规则ID            |           规则名称           |                      描述                      | 严重级别 |
+| :--------------------------: | :--------------------------: | :--------------------------------------------: | :------: |
+|    **命名规则 (Naming)**     |                              |                                                |          |
+|            CSN001            |     ClassNamePascalCase      |          类名应该使用PascalCase命名法          |   警告   |
+|            CSN002            |   InterfaceNameStartsWithI   |  接口名称必须以'I'开头并遵循PascalCase命名法   |   警告   |
+|            CSN003            |    StructNameStartsWithSt    | 结构体名称必须以'st'开头并遵循PascalCase命名法 |   警告   |
+|            CSN004            |     MethodNamePascalCase     |         方法名应该使用PascalCase命名法         |   警告   |
+|            CSN005            | PrivateFieldUnderscorePrefix |           私有字段应该使用下划线前缀           |   警告   |
+|            CSN006            |      StaticFieldNaming       |   静态字段应该使用s_+[类型缩写]+变量名称格式   |   警告   |
+|            CSN007            |     ConstantNameAllCaps      |     常量名应该全部大写并使用下划线分隔单词     |   警告   |
+|            CSN008            |      VariableCamelCase       |        局部变量应该使用camelCase命名法         |   警告   |
+|            CSN009            |    CollectionPluralNaming    |        集合类型变量的命名应使用复数形式        |   提示   |
+|   **结构规则 (Structure)**   |                              |                                                |          |
+|            CSS001            |        BraceOnNewLine        |       开括号应该放在新行上（Allman风格）       |   警告   |
+| **可读性规则 (Readability)** |                              |                                                |          |
+|            CSR001            |         LineTooLong          |            行长度不应超过指定字符数            |   提示   |
 
 ## 示例
 
