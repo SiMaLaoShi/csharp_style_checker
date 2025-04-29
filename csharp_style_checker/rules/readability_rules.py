@@ -12,7 +12,7 @@ class LineIsTooLongRule(BaseRule):
 
     def __init__(self, max_length=100):
         super().__init__(
-            rule_id="CS0005",
+            rule_id="CSR001",
             name="LineTooLong",
             description=f"行长度不应超过{max_length}个字符",
             category="readability",

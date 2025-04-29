@@ -13,7 +13,7 @@ class ClassNamePascalCaseRule(BaseRule):
 
     def __init__(self):
         super().__init__(
-            rule_id="CS0001",
+            rule_id="CSN001",
             name="ClassNamePascalCase",
             description="类名应该使用PascalCase命名法",
             category="naming",
@@ -45,14 +45,14 @@ class ClassNamePascalCaseRule(BaseRule):
         return issues
 
 
-class PrivateFieldUnderscoreRule(BaseRule):
-    """检查私有字段是否使用下划线前缀"""
+class InterfaceNamingRule(BaseRule):
+    """检查接口名称是否以I开头并符合PascalCase命名规范"""
 
     def __init__(self):
         super().__init__(
             rule_id="CS0002",
-            name="PrivateFieldUnderscorePrefix",
-            description="私有字段应该使用下划线前缀",
+            name="InterfaceNameStartsWithI",
+            description="接口名称必须以'I'开头并遵循PascalCase命名法",
             category="naming",
             severity="warning"
         )
@@ -60,146 +60,30 @@ class PrivateFieldUnderscoreRule(BaseRule):
     def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
         issues = []
 
-        # 查找私有字段定义
-        field_pattern = re.compile(r'private\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*[;=]')
+        # 查找接口定义
+        interface_pattern = re.compile(r'(public|internal)?\s+interface\s+([a-zA-Z0-9_]+)')
 
         for i, line in enumerate(lines):
-            match = field_pattern.search(line)
+            match = interface_pattern.search(line)
             if match:
-                field_name = match.group(1)
+                interface_name = match.group(2)
 
-                # 检查是否以下划线开头
-                if field_name and not field_name.startswith('_'):
+                # 检查是否以I开头
+                if not interface_name.startswith('I'):
                     issues.append(CodeIssue(
                         line=i + 1,
-                        column=match.start(1) + 1,
-                        message=f"私有字段 '{field_name}' 应该使用下划线前缀",
+                        column=match.start(2) + 1,
+                        message=f"接口名 '{interface_name}' 必须以'I'开头",
                         rule_id=self.rule_id,
                         severity=self.severity,
                         file_path=file_path
                     ))
-
-        return issues
-
-
-class MethodNamePascalCaseRule(BaseRule):
-    """检查方法名是否符合PascalCase命名规范"""
-
-    def __init__(self):
-        super().__init__(
-            rule_id="CS0003",
-            name="MethodNamePascalCase",
-            description="方法名应该使用PascalCase命名法",
-            category="naming",
-            severity="warning"
-        )
-
-    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
-        issues = []
-
-        # 查找方法定义
-        method_pattern = re.compile(
-            r'(public|private|protected|internal|static|virtual|override|abstract)?\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*\(')
-
-        for i, line in enumerate(lines):
-            match = method_pattern.search(line)
-            if match:
-                method_name = match.group(2)
-
-                # 跳过构造函数和特殊方法
-                if method_name not in ["Dispose", "Main"] and not self._is_constructor(method_name, source_code):
-                    # 检查是否符合PascalCase（首字母大写）
-                    if method_name and not method_name[0].isupper():
-                        issues.append(CodeIssue(
-                            line=i + 1,
-                            column=match.start(2) + 1,
-                            message=f"方法名 '{method_name}' 应该使用PascalCase命名法（首字母大写）",
-                            rule_id=self.rule_id,
-                            severity=self.severity,
-                            file_path=file_path
-                        ))
-
-        return issues
-
-    def _is_constructor(self, method_name: str, source_code: str) -> bool:
-        """检查方法是否是构造函数"""
-        # 简单检查：查找类名与方法名相同的情况
-        class_pattern = re.compile(r'class\s+(' + method_name + r')\b')
-        return bool(class_pattern.search(source_code))
-
-
-class VariableCamelCaseRule(BaseRule):
-    """检查局部变量是否使用camelCase命名规范"""
-
-    def __init__(self):
-        super().__init__(
-            rule_id="CS0006",
-            name="VariableCamelCase",
-            description="局部变量应该使用camelCase命名法",
-            category="naming",
-            severity="warning"
-        )
-
-    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
-        issues = []
-
-        # 查找方法内的变量声明
-        # 简化版：查找形如 "TypeName variableName" 的模式
-        variable_pattern = re.compile(r'\b([A-Z][a-zA-Z0-9_<>.\[\]]+)\s+([a-zA-Z][a-zA-Z0-9_]*)\s*[;=]')
-
-        for i, line in enumerate(lines):
-            # 跳过可能的字段声明
-            if re.search(r'\b(public|private|protected|internal)\b', line):
-                continue
-
-            # 查找局部变量
-            for match in variable_pattern.finditer(line):
-                type_name = match.group(1)
-                variable_name = match.group(2)
-
-                # 检查是否符合camelCase（首字母小写）
-                if variable_name and variable_name[0].isupper():
+                # 检查首字母后的部分是否符合PascalCase
+                elif len(interface_name) > 1 and not interface_name[1].isupper():
                     issues.append(CodeIssue(
                         line=i + 1,
                         column=match.start(2) + 1,
-                        message=f"变量名 '{variable_name}' 应该使用camelCase命名法（首字母小写）",
-                        rule_id=self.rule_id,
-                        severity=self.severity,
-                        file_path=file_path
-                    ))
-
-        return issues
-
-
-class ConstantNameAllCapsRule(BaseRule):
-    """检查常量命名是否全部大写"""
-
-    def __init__(self):
-        super().__init__(
-            rule_id="CS0006",
-            name="ConstantNameAllCaps",
-            description="常量名应该全部大写并使用下划线分隔单词",
-            category="naming",
-            severity="warning"
-        )
-
-    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
-        issues = []
-
-        # 查找常量定义 - 包含const关键字的成员
-        constant_pattern = re.compile(r'(public|private|protected|internal)\s+const\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*[=;]')
-
-        for i, line in enumerate(lines):
-            match = constant_pattern.search(line)
-            if match:
-                constant_name = match.group(2)
-
-                # 检查是否全部大写 (允许数字和下划线)
-                if not re.match(r'^[A-Z0-9_]+$', constant_name):
-                    issues.append(CodeIssue(
-                        line=i + 1,
-                        column=match.start(2) + 1,
-                        message=f"常量名 '{constant_name}' 应该全部大写并使用下划线分隔单词",
+                        message=f"接口名 '{interface_name}' 必须遵循PascalCase命名法(I后首字母大写)",
                         rule_id=self.rule_id,
                         severity=self.severity,
                         file_path=file_path
@@ -213,7 +97,7 @@ class StructNamingRule(BaseRule):
 
     def __init__(self):
         super().__init__(
-            rule_id="CS0009",
+            rule_id="CSN003",
             name="StructNameStartsWithSt",
             description="结构体名称必须以'st'开头并遵循PascalCase命名法",
             category="naming",
@@ -255,14 +139,14 @@ class StructNamingRule(BaseRule):
         return issues
 
 
-class InterfaceNamingRule(BaseRule):
-    """检查接口名称是否以I开头并符合PascalCase命名规范"""
+class MethodNamePascalCaseRule(BaseRule):
+    """检查方法名是否符合PascalCase命名规范"""
 
     def __init__(self):
         super().__init__(
-            rule_id="CS0007",
-            name="InterfaceNameStartsWithI",
-            description="接口名称必须以'I'开头并遵循PascalCase命名法",
+            rule_id="CSN004",
+            name="MethodNamePascalCase",
+            description="方法名应该使用PascalCase命名法",
             category="naming",
             severity="warning"
         )
@@ -270,30 +154,66 @@ class InterfaceNamingRule(BaseRule):
     def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
         issues = []
 
-        # 查找接口定义
-        interface_pattern = re.compile(r'(public|internal)?\s+interface\s+([a-zA-Z0-9_]+)')
+        # 查找方法定义
+        method_pattern = re.compile(
+            r'(public|private|protected|internal|static|virtual|override|abstract)?\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*\(')
 
         for i, line in enumerate(lines):
-            match = interface_pattern.search(line)
+            match = method_pattern.search(line)
             if match:
-                interface_name = match.group(2)
+                method_name = match.group(2)
 
-                # 检查是否以I开头
-                if not interface_name.startswith('I'):
+                # 跳过构造函数和特殊方法
+                if method_name not in ["Dispose", "Main"] and not self._is_constructor(method_name, source_code):
+                    # 检查是否符合PascalCase（首字母大写）
+                    if method_name and not method_name[0].isupper():
+                        issues.append(CodeIssue(
+                            line=i + 1,
+                            column=match.start(2) + 1,
+                            message=f"方法名 '{method_name}' 应该使用PascalCase命名法（首字母大写）",
+                            rule_id=self.rule_id,
+                            severity=self.severity,
+                            file_path=file_path
+                        ))
+
+        return issues
+
+    def _is_constructor(self, method_name: str, source_code: str) -> bool:
+        """检查方法是否是构造函数"""
+        # 简单检查：查找类名与方法名相同的情况
+        class_pattern = re.compile(r'class\s+(' + method_name + r')\b')
+        return bool(class_pattern.search(source_code))
+
+
+class PrivateFieldUnderscoreRule(BaseRule):
+    """检查私有字段是否使用下划线前缀"""
+
+    def __init__(self):
+        super().__init__(
+            rule_id="CSN005",
+            name="PrivateFieldUnderscorePrefix",
+            description="私有字段应该使用下划线前缀",
+            category="naming",
+            severity="warning"
+        )
+
+    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
+        issues = []
+
+        # 查找私有字段定义
+        field_pattern = re.compile(r'private\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*[;=]')
+
+        for i, line in enumerate(lines):
+            match = field_pattern.search(line)
+            if match:
+                field_name = match.group(1)
+
+                # 检查是否以下划线开头
+                if field_name and not field_name.startswith('_'):
                     issues.append(CodeIssue(
                         line=i + 1,
-                        column=match.start(2) + 1,
-                        message=f"接口名 '{interface_name}' 必须以'I'开头",
-                        rule_id=self.rule_id,
-                        severity=self.severity,
-                        file_path=file_path
-                    ))
-                # 检查首字母后的部分是否符合PascalCase
-                elif len(interface_name) > 1 and not interface_name[1].isupper():
-                    issues.append(CodeIssue(
-                        line=i + 1,
-                        column=match.start(2) + 1,
-                        message=f"接口名 '{interface_name}' 必须遵循PascalCase命名法(I后首字母大写)",
+                        column=match.start(1) + 1,
+                        message=f"私有字段 '{field_name}' 应该使用下划线前缀",
                         rule_id=self.rule_id,
                         severity=self.severity,
                         file_path=file_path
@@ -393,12 +313,92 @@ class StaticFieldNamingRule(BaseRule):
         return issues
 
 
+class ConstantNameAllCapsRule(BaseRule):
+    """检查常量命名是否全部大写"""
+
+    def __init__(self):
+        super().__init__(
+            rule_id="CS0007",
+            name="ConstantNameAllCaps",
+            description="常量名应该全部大写并使用下划线分隔单词",
+            category="naming",
+            severity="warning"
+        )
+
+    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
+        issues = []
+
+        # 查找常量定义 - 包含const关键字的成员
+        constant_pattern = re.compile(r'(public|private|protected|internal)\s+const\s+[a-zA-Z0-9_<>.\[\]]+\s+([a-zA-Z0-9_]+)\s*[=;]')
+
+        for i, line in enumerate(lines):
+            match = constant_pattern.search(line)
+            if match:
+                constant_name = match.group(2)
+
+                # 检查是否全部大写 (允许数字和下划线)
+                if not re.match(r'^[A-Z0-9_]+$', constant_name):
+                    issues.append(CodeIssue(
+                        line=i + 1,
+                        column=match.start(2) + 1,
+                        message=f"常量名 '{constant_name}' 应该全部大写并使用下划线分隔单词",
+                        rule_id=self.rule_id,
+                        severity=self.severity,
+                        file_path=file_path
+                    ))
+
+        return issues
+
+
+class VariableCamelCaseRule(BaseRule):
+    """检查局部变量是否使用camelCase命名规范"""
+
+    def __init__(self):
+        super().__init__(
+            rule_id="CSN008",
+            name="VariableCamelCase",
+            description="局部变量应该使用camelCase命名法",
+            category="naming",
+            severity="warning"
+        )
+
+    def analyze(self, lines: List[str], source_code: str, file_path: str) -> List[CodeIssue]:
+        issues = []
+
+        # 查找方法内的变量声明
+        # 简化版：查找形如 "TypeName variableName" 的模式
+        variable_pattern = re.compile(r'\b([A-Z][a-zA-Z0-9_<>.\[\]]+)\s+([a-zA-Z][a-zA-Z0-9_]*)\s*[;=]')
+
+        for i, line in enumerate(lines):
+            # 跳过可能的字段声明
+            if re.search(r'\b(public|private|protected|internal)\b', line):
+                continue
+
+            # 查找局部变量
+            for match in variable_pattern.finditer(line):
+                type_name = match.group(1)
+                variable_name = match.group(2)
+
+                # 检查是否符合camelCase（首字母小写）
+                if variable_name and variable_name[0].isupper():
+                    issues.append(CodeIssue(
+                        line=i + 1,
+                        column=match.start(2) + 1,
+                        message=f"变量名 '{variable_name}' 应该使用camelCase命名法（首字母小写）",
+                        rule_id=self.rule_id,
+                        severity=self.severity,
+                        file_path=file_path
+                    ))
+
+        return issues
+
+
 class CollectionPluralNamingRule(BaseRule):
     """检查集合类型的变量名是否使用复数形式"""
 
     def __init__(self):
         super().__init__(
-            rule_id="CS0006",
+            rule_id="CS0009",
             name="CollectionPluralNaming",
             description="集合类型(如列表、字典、堆栈等)的变量命名应使用复数形式",
             category="naming",

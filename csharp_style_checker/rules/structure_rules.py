@@ -13,7 +13,7 @@ class BraceOnNewLineRule(BaseRule):
 
     def __init__(self):
         super().__init__(
-            rule_id="CS0004",
+            rule_id="CSS001",
             name="BraceOnNewLine",
             description="开括号应该放在新行上（Allman风格）",
             category="structure",
